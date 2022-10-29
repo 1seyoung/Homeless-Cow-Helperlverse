@@ -67,9 +67,10 @@ class db_manager(object):
             if view :
                 if userdata.id != view.id:
                     viewers[str(view.id)] = role
-
+        if space.form_data['agreement'][0] == "":
+            space.form_data['agreement'][0] = "public"
         data = {'name':space.form_data['space_name'][0], 'explain': space.form_data['space_explain'][0], 
-                'creator': userdata.id, 'viewers':viewers, 'scenes':{}}
+                'creator': userdata.id, 'viewers':viewers, 'scenes':{}, 'agreement':space.form_data['agreement'][0]}
         space_id = await db_manager.get_collection('spaces').insert_one(data) 
 
         for viewer, val in viewers.items():
