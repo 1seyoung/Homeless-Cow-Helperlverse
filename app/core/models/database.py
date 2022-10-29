@@ -54,7 +54,7 @@ class db_manager(object):
         if userdata:
             return False
         else:
-            data = {'userid':user.username, 'email':user.email, 'spaces':{}, 'hashed_password':get_password_hash(user.password)}
+            data = {'userid':user.username, 'email':user.email, 'chatid':user.chatid,'spaces':{}, 'hashed_password':get_password_hash(user.password)}
             await db_manager.get_collection('users').insert_one(data) 
             return True
 
