@@ -21,7 +21,7 @@ class UserRegisterForm:
         self.errors: list = []
         self.username: str = ""
         self.email: str = ""
-        self.chatid: int = ""
+        self.chatid: str = ""
         self.password: str = ""
 
     async def load_data(self):
