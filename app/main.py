@@ -16,7 +16,7 @@ from .core.models.auth_manager import auth_manager
 from .core.schemas.token_model import Token
 from .core.instance.config import MONGODB_URL, ACCESS_TOKEN_EXPIRE_MINUTES
 
-from app.core.routers import page_view, register, login, create, space, asset
+from app.core.routers import page_view, register, login, create, space, asset, board
 
 BASE_DIR = dirname(abspath(__file__))
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'core/templates')))
@@ -31,6 +31,8 @@ app.include_router(login.router, prefix="", tags=["login"])
 app.include_router(create.router, prefix="", tags=["create"])
 app.include_router(space.router, prefix="", tags=["space"])
 app.include_router(asset.router, prefix="", tags=["asset"])
+app.include_router(board.router, prefix="", tags=["board"])
+
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):

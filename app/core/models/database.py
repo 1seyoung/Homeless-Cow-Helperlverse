@@ -197,6 +197,16 @@ class db_manager(object):
         return spaces
     
     @classmethod
+    async def get_public_spaces(cls):
+        spaces = {}
+        
+        cursor = cls.get_collection("spaces").find({"agreement":"public"})
+        for doc in await cursor.to_list(length=100):
+            spaces[doc["_id"]] = [doc["name"], doc['explain'], "viewer"]
+        
+        return spaces
+    
+    @classmethod
     async def get_scenes_from_space(cls, spaceid: ObjectId):
         scenes = []
         cursor = await cls.get_collection("spaces").find_one({"_id":spaceid})
@@ -212,7 +222,7 @@ class db_manager(object):
             return SpaceModel(**cursor)
         else:
             return None
-
+        
     @classmethod
     async def store_image(cls, filename:str, metadata, contents):
         fs = motor.motor_asyncio.AsyncIOMotorGridFSBucket(cls.db, bucket_name="images")
