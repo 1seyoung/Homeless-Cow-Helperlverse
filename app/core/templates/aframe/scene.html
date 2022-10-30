@@ -8,8 +8,11 @@
 <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
 <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
 <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', path='/scripts/link-controls.js') }}" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', path='/scripts/contents-save.js') }}" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', path='/scripts/aframe-inspector-custom.js') }}" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', path='/scripts/space-data.js') }}" crossorigin="anonymous"></script>
 
 {% endblock %} 
 
@@ -29,7 +32,7 @@
   </div>
 
   <div class="row" style="height: 75vh;">
-    <a-scene embedded>
+    <a-scene id='scene' embedded>
       <a-assets>
         <!-- Images. -->
         <img id="background" src="/asset/image/{{data.background}}" crossorigin="anonymous">
@@ -51,7 +54,9 @@
               position="{{link[2]}} {{link[3]}} {{link[4]}}" rotation="{{link[5]}} {{link[6]}} {{link[7]}}"></a-link>
       {% endfor%}
 
-      <a-box class="clickable" contents-save="space_id:{{data.space_id}}" height="0.5" width="0.5" position="0 -2 -2" color="red"></a-box>
+      <a-box id="saveButton" class="clickable" contents-save="space_id:{{data.space_id}}" height="0.5" width="0.5" position="0 -2 -2" color="red"></a-box>
+      <a-entity id="linkButton" width="0" height="0" space-data="space_data:{{data.space_data}}" scale='0'></a-entity>
+      <a-entity id="objects"></a-entity>
 
       <a-camera>
         <a-cursor

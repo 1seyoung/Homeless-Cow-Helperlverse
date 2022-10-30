@@ -128,7 +128,15 @@ class db_manager(object):
     async def create_link(cls, data:dict):
         link_id = await db_manager.get_collection('links').insert_one(data)
         return link_id
-
+    
+    async def create_object(cls, data:dict):
+        object_id = await db_manager.get_collection('objects').insert_one(data)
+        return object_id
+    
+    async def create_linkObjs(cls, data:dict):
+        linkObjs_id = await db_manager.get_collection('linkObjs').insert_one(data)
+        return linkObjs_id
+    
     @classmethod
     async def update_scene(cls, form:UpdateSceneForm, space_id:ObjectId, scene_id:ObjectId ):
         '''
@@ -139,7 +147,7 @@ class db_manager(object):
 
         prev_scene = await db_manager.get_collection('scenes').find_one(scene_id)
         proc_links = list(zip(form.scene, form.x, form.y, form.z, form.yaw, form.pitch, form.roll))
-        #print(proc_links)
+        print(proc_links)
 
         prev_links = prev_scene['links']
 
@@ -151,7 +159,7 @@ class db_manager(object):
                 if ObjectId(link_id) in prev_links:
                     prev_links.remove(ObjectId(link_id))
                 data = {'x':plink[1], 'y':plink[2], 'z':plink[3],'target_id':ObjectId(target_id), 'yaw':plink[4], 'pitch':plink[5], 'roll':plink[6],}
-                #print(data)
+                print(data)
                 await db_manager.get_collection('links').update_one({'_id':ObjectId(link_id)}, {'$set':data})
             else:
                 if target_id != "":
