@@ -15,6 +15,9 @@
                 <li class="nav-item {{'active' if active_page == 'view' }}">
                     <a class="nav-link" href="/view">View</a>
                 </li>
+                <li class="nav-item {{'active' if active_page == 'board' }}">
+                    <a class="nav-link" href="/board">Board</a>
+                </li>
                 <li class="nav-item {{'active' if active_page == 'login' }}">
                     {% if login is sameas true %}
                         <a class="nav-link" href="/logout">logout</a>

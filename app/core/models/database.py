@@ -5,10 +5,11 @@ from fastapi import Request
 
 from ..libs.utils import verify_password
 from ..libs.utils import get_password_hash
-
+import httpx
 from ..schemas.user_model import UserRegisterForm, UserInDB
 from ..schemas.space_model import CreateSpaceForm, SpaceModel, CreateSceneForm, UpdateSceneForm
-
+from ..instance.config import TELEGRAM_TOKEN
+from .telegram_  import tele_manager
 
 class db_manager(object):
     client = None
@@ -54,9 +55,13 @@ class db_manager(object):
         if userdata:
             return False
         else:
-            data = {'userid':user.username, 'email':user.email, 'spaces':{}, 'hashed_password':get_password_hash(user.password)}
+            data = {'userid':user.username, 'email':user.email, 'chatid':user.chatid,'spaces':{}, 'hashed_password':get_password_hash(user.password)}
+            ee = f"Register email : {user.email}"
+            print(user.chatid)
+            await tele_manager.sendTgMessage(user.chatid,ee)
             await db_manager.get_collection('users').insert_one(data) 
             return True
+
 
     @classmethod
     async def create_space(cls, creator: str, space:CreateSpaceForm):
@@ -67,9 +72,10 @@ class db_manager(object):
             if view :
                 if userdata.id != view.id:
                     viewers[str(view.id)] = role
-
+        if space.form_data['agreement'][0] == "":
+            space.form_data['agreement'][0] = "public"
         data = {'name':space.form_data['space_name'][0], 'explain': space.form_data['space_explain'][0], 
-                'creator': userdata.id, 'viewers':viewers, 'scenes':{}}
+                'creator': userdata.id, 'viewers':viewers, 'scenes':{}, 'agreement':space.form_data['agreement'][0]}
         space_id = await db_manager.get_collection('spaces').insert_one(data) 
 
         for viewer, val in viewers.items():
@@ -204,6 +210,16 @@ class db_manager(object):
         return spaces
     
     @classmethod
+    async def get_public_spaces(cls):
+        spaces = {}
+        
+        cursor = cls.get_collection("spaces").find({"agreement":"public"})
+        for doc in await cursor.to_list(length=100):
+            spaces[doc["_id"]] = [doc["name"], doc['explain'], "viewer"]
+        
+        return spaces
+    
+    @classmethod
     async def get_scenes_from_space(cls, spaceid: ObjectId):
         scenes = []
         cursor = await cls.get_collection("spaces").find_one({"_id":spaceid})
@@ -219,7 +235,7 @@ class db_manager(object):
             return SpaceModel(**cursor)
         else:
             return None
-
+        
     @classmethod
     async def store_image(cls, filename:str, metadata, contents):
         fs = motor.motor_asyncio.AsyncIOMotorGridFSBucket(cls.db, bucket_name="images")

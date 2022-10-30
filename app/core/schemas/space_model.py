@@ -20,7 +20,8 @@ class CreateSpaceForm:
     def __init__(self, request: Request):
         self.request: Request = request
         self.errors: list = []
-        self.form_data = {}
+        self.form_data = {'agreement' : ['private']}
+        #self.form_data['agreements'] = ['private']
 
     async def load_data(self):
         form = await self.request.form()
@@ -30,13 +31,18 @@ class CreateSpaceForm:
             if k not in self.form_data:
                 self.form_data.setdefault(k, []).append(v)
             else:
-                self.form_data[k].append(v)
+                self.form_data[k] = [v]
+        print(self.form_data)
 
     async def is_valid(self):
         if not self.form_data['space_name'][0]:
             self.errors.append("Space name is required")
         if not self.form_data['space_explain'][0]:
             self.errors.append("Space explanation is required")
+            ### add
+        #if not self.form_data['']:
+            
+        ### add done
         if not self.errors:
             return True
         return False

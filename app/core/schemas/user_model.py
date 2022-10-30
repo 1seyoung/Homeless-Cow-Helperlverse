@@ -21,12 +21,14 @@ class UserRegisterForm:
         self.errors: list = []
         self.username: str = ""
         self.email: str = ""
+        self.chatid: str = ""
         self.password: str = ""
 
     async def load_data(self):
         form = await self.request.form()
         self.username = form.get("username")
         self.email = form.get("email")
+        self.chatid= form.get("chatid")
         self.password = form.get("password")
         self.rpassword = form.get("rpassword")
         self.agreement = form.get("agreement")
