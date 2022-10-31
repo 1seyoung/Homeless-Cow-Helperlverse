@@ -226,6 +226,15 @@ class db_manager(object):
         content = await gridout.read()
 
         return (content, gridout.content_type)
+    
+    @classmethod
+    async def download_video(cls, file_id):
+        """Returns iterator over AsyncIOMotorGridOut object"""
+        fs = motor.motor_asyncio.AsyncIOMotorGridFSBucket(cls.db, bucket_name="video")
+        gridout = await fs.open_download_stream(file_id)
+        content = await gridout.read()
+
+        return (content, gridout.content_type)
         
     @classmethod
     async def delete_scene(cls, space_id:ObjectId, scene_id:ObjectId):

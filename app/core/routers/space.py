@@ -155,7 +155,8 @@ async def edit_space(request: Request, space_id:str, auth_user= Depends(get_curr
                     viewers[_user.email] = val
             
             #print(viewers)
-            data = {'space_name':space.name, 'space_explain':space.explain, 'invite_lists':viewers}
+            
+            data = {'space_name':space.name, 'space_explain':space.explain, 'invite_lists':viewers, 'agreement' : space.agreement}
             return templates.TemplateResponse("space/update_space.html", {"request": request, "data": data, "login":True})
         else:
             # raise Exception
