@@ -50,6 +50,34 @@
           <textarea class="form-control" id="space_ex" rows="3" name="space_explain">{{data.space_explain}}</textarea>
         </div>
 
+        <!-- input space name -->
+        <div class="container">
+          <label for="auth">Auth</label>
+          <input
+            class="form-control"
+            id="auth"
+            placeholder="Enter unique space name"
+            name="auth"
+            value="{{data.agreement}}"
+            style= "color: #ff0000;"
+            readonly
+          />
+        </div>
+
+        <div class="form-check d-flex justify-content-center mb-5">
+          <input
+            class="form-check-input me-2"
+            type="checkbox"
+            value=""
+            name="agreement"
+            id="form2Example3c"
+          />
+          <label class="form-check-label" for="form2Example3">
+            I agree my space for public
+            <a href="#!">Terms of service</a>
+          </label>
+        </div>
+
         <!-- invite user  -->
         <div class="container" id="itemList">
           <p></p>

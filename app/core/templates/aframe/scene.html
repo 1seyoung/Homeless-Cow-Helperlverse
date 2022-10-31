@@ -11,8 +11,6 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', path='/scripts/link-controls.js') }}" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', path='/scripts/contents-save.js') }}" crossorigin="anonymous"></script>
-<script src="{{ url_for('static', path='/scripts/aframe-inspector-custom.js') }}" crossorigin="anonymous"></script>
-<script src="{{ url_for('static', path='/scripts/space-data.js') }}" crossorigin="anonymous"></script>
 
 {% endblock %} 
 
@@ -32,7 +30,7 @@
   </div>
 
   <div class="row" style="height: 75vh;">
-    <a-scene id='scene' embedded>
+    <a-scene embedded>
       <a-assets>
         <!-- Images. -->
         <img id="background" src="/asset/image/{{data.background}}" crossorigin="anonymous">
@@ -59,11 +57,17 @@
       <a-entity id="objects"></a-entity>
 
       <a-camera>
+        <a-entity
+                position="0 0 -1.5"
+                hide-on-play="#videoBunny">
+        </a-entity>
+        <!--
         <a-cursor
           id="cursor"
           animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; easing: easeInCubic; dur: 150; startEvents: click"
           animation__clickreset="property: scale; to: 0.1 0.1 0.1; dur: 1; startEvents: animationcomplete__click"
           animation__fusing="property: scale; from: 1 1 1; to: 0.1 0.1 0.1; easing: easeInCubic; dur: 150; startEvents: fusing"></a-cursor>
+        -->
       </a-camera>
     </a-scene>
         
