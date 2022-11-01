@@ -23,7 +23,7 @@ class tele_manager(object):
 
     @classmethod
     def init(cls):
-        cls.t_updater = Updater("5610228034:AAFYqTLtvZAGzYETsM_P6WT-art-XDVWmjY")
+        cls.t_updater = Updater(TELEGRAM_TOKEN)
 
         # Get the dispatcher to register handlers
         dispatcher = cls.t_updater.dispatcher
