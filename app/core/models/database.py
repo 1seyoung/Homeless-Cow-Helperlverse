@@ -8,8 +8,7 @@ from ..libs.utils import get_password_hash
 import httpx
 from ..schemas.user_model import UserRegisterForm, UserInDB
 from ..schemas.space_model import CreateSpaceForm, SpaceModel, CreateSceneForm, UpdateSceneForm
-from ..instance.config import TELEGRAM_TOKEN
-#from .telegram_  import tele_manager
+
 
 class db_manager(object):
     client = None
@@ -48,7 +47,6 @@ class db_manager(object):
         if not verify_password(password, user.hashed_password):
             return False
         return user
-
     @classmethod
     async def create_user(cls, user:UserRegisterForm):
         userdata = await cls.get_user_by_email(user.email)
@@ -56,10 +54,7 @@ class db_manager(object):
             return False
         else:
             data = {'userid':user.username, 'email':user.email, 'chatid':user.chatid,'spaces':{}, 'hashed_password':get_password_hash(user.password)}
-            ee = f"Register email : {user.email}"
-            #print(user.chatid)
-            #await tele_manager.sendTgMessage(user.chatid,ee)
-            #await db_manager.get_collection('users').insert_one(data) 
+            await db_manager.get_collection('users').insert_one(data) 
             return True
 
 
