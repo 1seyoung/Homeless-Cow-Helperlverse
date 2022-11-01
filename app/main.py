@@ -10,9 +10,12 @@ from datetime import timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import RedirectResponse
+import telegram
 
 from .core.models.database import db_manager
 from .core.models.auth_manager import auth_manager
+from .core.models.telegram_ import tele_manager
+
 from .core.schemas.token_model import Token
 from .core.instance.config import MONGODB_URL, ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -33,6 +36,7 @@ app.include_router(space.router, prefix="", tags=["space"])
 app.include_router(asset.router, prefix="", tags=["asset"])
 app.include_router(board.router, prefix="", tags=["board"])
 
+tele_manager.init()
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):

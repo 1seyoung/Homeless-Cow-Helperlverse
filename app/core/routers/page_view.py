@@ -11,6 +11,8 @@ from ..models.auth_manager import auth_manager, get_current_user
 from ..schemas.space_model import CreateSpaceForm
 from ..libs.resolve_error import resolve_error
 
+from ..models.telegram_ import tele_manager
+
 router = APIRouter(include_in_schema=False)
 
 db_manager.init_manager(config.MONGODB_URL, "simulverse")
@@ -20,6 +22,7 @@ templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request, auth_user= Depends(get_current_user)):
+    tele_manager.sendMsg("seni")
     if not auth_user :
         data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})
