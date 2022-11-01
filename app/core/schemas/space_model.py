@@ -9,6 +9,7 @@ class SpaceModel(BaseModel):
     creator: ObjectId = Field(default_factory=ObjectId)
     viewers: dict | None = None
     scenes: dict | None = None
+    agreement : str =""
     
     class Config:
         allow_population_by_field_name = True
