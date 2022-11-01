@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request, auth_user= Depends(get_current_user)):
-    tele_manager.sendMsg("seni")
+    tele_manager.sendMsg(1739915236,"seni")
     if not auth_user :
         data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})

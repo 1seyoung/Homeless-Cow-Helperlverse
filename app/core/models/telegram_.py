@@ -37,8 +37,8 @@ class tele_manager(object):
         pass
 
     @classmethod
-    def sendMsg(cls, msg):
-        cls.t_updater.bot.sendMessage(1739915236, msg)
+    def sendMsg(cls, chatid,msg):
+        cls.t_updater.bot.sendMessage(chatid, msg)
     @classmethod
     async def sendTgMessage(cls,chatid:str,message: str):
         tg_msg = {"chat_id": chatid, "text": message, "parse_mode": "Markdown"}
