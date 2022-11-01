@@ -9,7 +9,7 @@ import httpx
 from ..schemas.user_model import UserRegisterForm, UserInDB
 from ..schemas.space_model import CreateSpaceForm, SpaceModel, CreateSceneForm, UpdateSceneForm
 from ..instance.config import TELEGRAM_TOKEN
-from .telegram_  import tele_manager
+#from .telegram_  import tele_manager
 
 class db_manager(object):
     client = None
@@ -57,10 +57,11 @@ class db_manager(object):
         else:
             data = {'userid':user.username, 'email':user.email, 'chatid':user.chatid,'spaces':{}, 'hashed_password':get_password_hash(user.password)}
             ee = f"Register email : {user.email}"
-            print(user.chatid)
-            await tele_manager.sendTgMessage(user.chatid,ee)
-            await db_manager.get_collection('users').insert_one(data) 
+            #print(user.chatid)
+            #await tele_manager.sendTgMessage(user.chatid,ee)
+            #await db_manager.get_collection('users').insert_one(data) 
             return True
+
 
     @classmethod
     async def get_chatid(cls, email: str):
@@ -69,8 +70,9 @@ class db_manager(object):
         scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
         return scene['chatid']
 
+    @classmethod
     async def get_owner_chatid(cls, email: str):
-        #현재 접속한 사람의 chatid 정보
+        #현재 접속한 스페이스 에디터의 chatid 정보
         userdata = await cls.get_user_by_email(email)
         scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
         return scene['chatid']
