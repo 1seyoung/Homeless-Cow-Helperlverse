@@ -27,7 +27,7 @@ import io
 @router.get("/asset/image/{image_id}", 
         responses = {
             200: {
-                "content": {"image/png": {}}}
+                "content": {"video/mp4": {}}}
         }, response_class=Response)        
 async def image(request: Request, image_id:str, auth_user= Depends(get_current_user)):
     image_bytes, content_type = await db_manager.download_file(ObjectId(image_id))
