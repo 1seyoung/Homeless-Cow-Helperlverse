@@ -31,7 +31,7 @@ class db_manager(object):
             return UserInDB(**document)
         else:
             return None
-    
+
     @classmethod
     async def get_user_by_id(cls, userid:ObjectId) -> UserInDB|None:
         document = await cls.get_collection("users").find_one({'_id': userid})
@@ -62,6 +62,12 @@ class db_manager(object):
             await db_manager.get_collection('users').insert_one(data) 
             return True
 
+    @classmethod
+    async def get_chatid(cls, email: str):
+        print("asaaa")
+        userdata = await cls.get_user_by_email(email)
+        scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
+        return scene['chatid']
 
     @classmethod
     async def create_space(cls, creator: str, space:CreateSpaceForm):

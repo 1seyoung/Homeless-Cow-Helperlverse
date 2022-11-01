@@ -22,7 +22,10 @@ templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request, auth_user= Depends(get_current_user)):
-    tele_manager.sendMsg(1739915236,"seni")
+    token = request.cookies.get('access_token')
+    payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
+    userid: str = payload.get("sub")
+    tele_manager.sendMsg(await db_manager.get_chatid(userid),"seni")
     if not auth_user :
         data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})

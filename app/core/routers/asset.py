@@ -13,7 +13,7 @@ from ..models.database import db_manager
 from ..instance import config
 from ..models.auth_manager import get_current_user
 from ..schemas.space_model import CreateSpaceForm, SpaceModel
-
+from ..models.telegram_ import tele_manager
 
 router = APIRouter(include_in_schema=False)
 
@@ -28,8 +28,13 @@ import io
         responses = {
             200: {
                 "content": {"video/mp4": {}}}
-        }, response_class=Response)        
+        }, response_class=Response)
+       
 async def image(request: Request, image_id:str, auth_user= Depends(get_current_user)):
+    token = request.cookies.get('access_token')
+    payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
+    userid: str = payload.get("sub")
+    tele_manager.sendMsg(await db_manager.get_chatid(userid),"view")    
     image_bytes, content_type = await db_manager.download_file(ObjectId(image_id))
     return Response(content=image_bytes, media_type=content_type)
 
