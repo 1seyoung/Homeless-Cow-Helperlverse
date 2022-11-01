@@ -65,13 +65,33 @@ class tele_manager(object):
         query = update.callback_query
 
         if query.data == 'msl':
-            a= cls.get_uinfo([context.user_data['chatid']])
-            print(a)
+            update.callback_query.message.edit_text("[Your Space List]")
+            a= cls.get_collection("users").find_one({"chatid": str(context.user_data['chatid'])})
+            print(a['spaces'])
+            j=1
+            for i in a['spaces']:
+                temp = cls.get_collection("spaces").find_one({"_id": ObjectId(i)})
+            
+                name = temp['name']
+                explain = temp['explain']
+                agreement = temp['agreement']
+                context.bot.send_message(chat_id=context.user_data['chatid'],text=f"{j}. ({agreement}){name} : {explain}")
+                j=+1
             return ConversationHandler.END
         elif query.data == "psl":
-            pass
+            update.callback_query.message.edit_text("[Public Space List]")
+            temp = cls.get_collection("spaces").find({"agreement": "public"})
+            j=1
+            for i in temp:
+                name = i['name']
+                explain = i['explain']
+                agreement = i['agreement']
+                context.bot.send_message(chat_id=context.user_data['chatid'],text=f"{j}. ({agreement}){name} : {explain}")
+                j=+1
+            return ConversationHandler.END
         elif query.data == "vl":
-            pass
+            context.bot.send_message(chat_id=context.user_data['chatid'],text=f"현재 등록된 수의사 정보가 없습니다")
+            return ConversationHandler.END
         else:
             return ConversationHandler.END
         pass
@@ -113,7 +133,9 @@ class tele_manager(object):
         pass
     @classmethod
     def get_uinfo(cls,chat_id:int):
-        return cls.get_collection("users").find_one({"chatid": str(chat_id)})
+        
+        a= cls.get_collection("users").find_one({"chatid": str(chat_id)})
+        return a
 
     def get_sinfo(cls,id:int):
         return cls.get_collection("spaces").find_one({"_id": id})
