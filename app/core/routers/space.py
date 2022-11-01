@@ -43,7 +43,8 @@ async def space(request: Request, space_id:str, auth_user= Depends(get_current_u
                 data = {'text':f"<h1>{space.name}</h1><p/><h3>{space.explain}</h3>",
                         'role':"viewer", 'scenes':space.scenes, 'space_id':space.id}
                 
-                return templates.TemplateResponse("space/view_space.html", {"request": request, "data": data, "login":True})
+                #return templates.TemplateResponse("space/view_space.html", {"request": request, "data": data, "login":True})
+                return templates.TemplateResponse("space/onlyview.html", {"request": request, "data": data, "login":True})
 
 @router.get("/space/insert/{space_id}", response_class=HTMLResponse)        
 async def insert_scene(request: Request, space_id:str, auth_user= Depends(get_current_user)):

@@ -32,7 +32,7 @@ async def root(request: Request, auth_user= Depends(get_current_user)):
 async def view(request: Request, auth_user= Depends(get_current_user)):
     if not auth_user :
         data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n<p>Please Log-in or Sign-up.</p>', 'spaces':{}}  
-        return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})
+        return templates.TemplateResponse("board.html", {"request": request, "data": data, "login": False})
     else:
         spaces = await db_manager.get_public_spaces()
         data = {'text':'<h1>Welcome to the Simulverse Management System </h1>', 'spaces':spaces} 
@@ -42,4 +42,4 @@ async def view(request: Request, auth_user= Depends(get_current_user)):
             errors = [ resolve_error(x) for x in request.query_params['error'].split('.')]
         
         #print(errors)
-        return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": True, "errors":errors})
+        return templates.TemplateResponse("board.html", {"request": request, "data": data, "login": True, "errors":errors})

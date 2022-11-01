@@ -64,7 +64,13 @@ class db_manager(object):
 
     @classmethod
     async def get_chatid(cls, email: str):
-        print("asaaa")
+        #현재 접속한 사람의 chatid 정보
+        userdata = await cls.get_user_by_email(email)
+        scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
+        return scene['chatid']
+
+    async def get_owner_chatid(cls, email: str):
+        #현재 접속한 사람의 chatid 정보
         userdata = await cls.get_user_by_email(email)
         scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
         return scene['chatid']
@@ -136,7 +142,7 @@ class db_manager(object):
         data = {'name':form.scene_name, 'image_id':image_id, 'links':check_list}
         scene_id = await db_manager.get_collection('scenes').insert_one(data)
         await db_manager.get_collection('spaces').update_one({'_id':ObjectId(space_id)}, [{"$set": {'scenes': {str(scene_id.inserted_id): form.scene_name}}}]) 
-
+ 
     async def create_link(cls, data:dict):
         link_id = await db_manager.get_collection('links').insert_one(data)
         return link_id
