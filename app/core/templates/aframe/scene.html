@@ -13,6 +13,7 @@
 <script src="{{ url_for('static', path='/scripts/contents-save.js') }}" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', path='/scripts/play-on-click.js') }}" crossorigin="anonymous"></script>
 <script src="{{ url_for('static', path='/scripts/hide-on-play.js') }}" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', path='/scripts/aframe-inspector-custom.js') }}" crossorigin="anonymous"></script>
 
 {% endblock %} 
 
@@ -32,7 +33,7 @@
   </div>
 
   <div class="row" style="height: 75vh;">
-    <a-scene embedded>
+    <a-scene id='scene' embedded>
       <a-assets>
         <!-- Images. 
         <img id="background" src="/asset/image/{{data.background}}" crossorigin="anonymous">-->
