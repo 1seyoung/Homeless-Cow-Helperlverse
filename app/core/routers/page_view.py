@@ -22,27 +22,35 @@ templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request, auth_user= Depends(get_current_user)):
-    tele_manager.sendMsg(1739915236,"seni")
+    token = request.cookies.get('access_token')
+    payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
+    userid: str = payload.get("sub")
+    user_name= await db_manager.get_name(userid)
     if not auth_user :
-        data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
+        data = {'text': '<div style="text-align: center" ;><h1>Metaverse Community </h1></div>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})
     else:
-        data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
+        data = {'text': f'<div style="text-align: center" ;><h1>Welcome {user_name}! </h1></div>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": True})
     
 
 @router.get("/view/", response_class=HTMLResponse)
 async def view(request: Request, auth_user= Depends(get_current_user)):
     if not auth_user :
-        data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n<p>Please Log-in or Sign-up.</p>', 'spaces':{}}  
+        data = {'text': '<div style="text-align: center" ;><h1>Metaverse Community </h1>\n<p>Please Log-in or Sign-up.</p></div>', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})
     else:
+        token = request.cookies.get('access_token')
+        payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
+        userid: str = payload.get("sub")
+        user_name= await db_manager.get_name(userid)
+        
         spaces = await db_manager.get_spaces(auth_user)
-        data = {'text':'<h1>Welcome to the Simulverse Management System </h1>', 'spaces':spaces} 
+        data = {'text':f'<div style="text-align: center" ;><h1>{user_name} Metaverse List</h1></div>', 'spaces':spaces} 
         
         errors = []
         if 'error' in request.query_params:
             errors = [ resolve_error(x) for x in request.query_params['error'].split('.')]
         
         #print(errors)
-        return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": True, "errors":errors})
+        return templates.TemplateResponse("page_no.html", {"request": request, "data": data, "login": True, "errors":errors})

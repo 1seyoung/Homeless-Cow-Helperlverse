@@ -24,7 +24,11 @@ async def root(request: Request, auth_user= Depends(get_current_user)):
         data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})
     else:
-        data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n', 'spaces':{}}  
+        token = request.cookies.get('access_token')
+        payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
+        userid: str = payload.get("sub")
+        user_name= await db_manager.get_name(userid)
+        data = {'text': f'<div style="text-align: center" ;><h1>Welcome {user_name}! </h1></div>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": True})
     
 
@@ -34,8 +38,12 @@ async def view(request: Request, auth_user= Depends(get_current_user)):
         data = {'text': '<h1>Welcome to the Simulverse Management System </h1>\n<p>Please Log-in or Sign-up.</p>', 'spaces':{}}  
         return templates.TemplateResponse("board.html", {"request": request, "data": data, "login": False})
     else:
+        token = request.cookies.get('access_token')
+        payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
+        userid: str = payload.get("sub")
+        user_name= await db_manager.get_name(userid)
         spaces = await db_manager.get_public_spaces()
-        data = {'text':'<h1>Welcome to the Simulverse Management System </h1>', 'spaces':spaces} 
+        data = {'text':f'<div style="text-align: center" ;><h1>Welcome {user_name}! </h1>\n<h1>-Public Board-</h1></div>', 'spaces':spaces} 
         
         errors = []
         if 'error' in request.query_params:
