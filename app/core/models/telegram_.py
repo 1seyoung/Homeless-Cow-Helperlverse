@@ -39,6 +39,7 @@ class tele_manager(object):
         show_list.append([InlineKeyboardButton("MENU", callback_data="menu")])
         show_list.append([InlineKeyboardButton("종료", callback_data="no")])
         show_markup =InlineKeyboardMarkup(show_list)
+        context.bot.send_photo(chat_id=update.effective_user.id,photo=open('/Users/seni/han30_project/Homeless-Cow-Helperlverse/app/core/templates/KakaoTalk_Image_2022-10-30-16-50-47.png','rb'))
         update.message.reply_text(f"Hello {scene['userid']}!\nSelect Button",reply_markup=show_markup)
     
         return MENU
@@ -76,7 +77,7 @@ class tele_manager(object):
                 explain = temp['explain']
                 agreement = temp['agreement']
                 context.bot.send_message(chat_id=context.user_data['chatid'],text=f"{j}. ({agreement}){name} : {explain}")
-                j=+1
+                j+=1
             return ConversationHandler.END
         elif query.data == "psl":
             update.callback_query.message.edit_text("[Public Space List]")
@@ -87,7 +88,7 @@ class tele_manager(object):
                 explain = i['explain']
                 agreement = i['agreement']
                 context.bot.send_message(chat_id=context.user_data['chatid'],text=f"{j}. ({agreement}){name} : {explain}")
-                j=+1
+                j+=1
             return ConversationHandler.END
         elif query.data == "vl":
             context.bot.send_message(chat_id=context.user_data['chatid'],text=f"현재 등록된 수의사 정보가 없습니다")
