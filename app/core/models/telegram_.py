@@ -18,7 +18,7 @@ from telegram import *
 from telegram.ext import *
 from telegram.ext import filters
 
-MENU,SELECT_BUTTON= range(2)
+MENU,SELECT_BUTTON,SALE= range(3)
 
 class tele_manager(object):
     t_updater = None
@@ -54,6 +54,7 @@ class tele_manager(object):
             show_list.append([InlineKeyboardButton("My Space List", callback_data="msl")])
             show_list.append([InlineKeyboardButton("Public Space List", callback_data="psl")])
             show_list.append([InlineKeyboardButton("Veterinarian List", callback_data="vl")])
+            show_list.append([InlineKeyboardButton("Crop Sales", callback_data="cs")])
             show_list.append([InlineKeyboardButton("종료", callback_data="no")])
             show_markup =InlineKeyboardMarkup(show_list)
             context.bot.send_message(chat_id=context.user_data['chatid'],text=f"Select Button you need",reply_markup=show_markup)
@@ -91,11 +92,31 @@ class tele_manager(object):
                 j+=1
             return ConversationHandler.END
         elif query.data == "vl":
-            context.bot.send_message(chat_id=context.user_data['chatid'],text=f"현재 등록된 수의사 정보가 없습니다")
+            context.bot.send_message(chat_id=context.user_data['chatid'],text=f"000-0000-0000 : location ~ , name~")
+            return ConversationHandler.END
+        elif query.data == "cs":
+            show_list=[]
+            show_list.append([InlineKeyboardButton("SALE", callback_data="sale")])
+            show_list.append([InlineKeyboardButton("BUY", callback_data="buy")])
+            show_list.append([InlineKeyboardButton("종료", callback_data="no")])
+            show_markup =InlineKeyboardMarkup(show_list)
+            context.bot.send_message(chat_id=context.user_data['chatid'],text=f"Select Button you need",reply_markup=show_markup)
+            return SALE
+        else:
+            return ConversationHandler.END
+
+    @classmethod 
+    def sale(cls, update: Update, context: CallbackContext) -> int:
+        query = update.callback_query
+        update.callback_query.message.edit_text("[SELECT Button]")
+        if query.data == 'sale':
+            context.bot.send_message(chat_id=context.user_data['chatid'],text=f"판매할 작물을 등록할 수 있습니다")
+            return ConversationHandler.END
+        elif query.data == 'buy':
+            context.bot.send_message(chat_id=context.user_data['chatid'],text=f"구매할 작물을 선택할 수 있습니다")
             return ConversationHandler.END
         else:
             return ConversationHandler.END
-        pass
 
     @classmethod 
     def cancel(cls, update: Update, context: CallbackContext) -> int:
@@ -123,7 +144,8 @@ class tele_manager(object):
             entry_points=[CommandHandler('start',cls.start)],
             states={
                 MENU : [CallbackQueryHandler(cls.menu)],
-                SELECT_BUTTON : [CallbackQueryHandler(cls.select)]
+                SELECT_BUTTON : [CallbackQueryHandler(cls.select)],
+                SALE : [CallbackQueryHandler(cls.sale)]
 
             },
             fallbacks=[CommandHandler('cancel', cls.cancel)],
