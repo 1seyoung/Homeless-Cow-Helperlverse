@@ -55,12 +55,42 @@
     
       Camera + Cursor. -->
       {% for link in data.links%}
-      <a-link class="clickable" title="{{link[0]}}" href="/space/scene/{{data.space_id}}/{{link[1]}}" origin="{{link[8]}}"
-              position="{{link[2]}} {{link[3]}} {{link[4]}}" rotation="{{link[5]}} {{link[6]}} {{link[7]}}"></a-link>
+      <a-link 
+        class="clickable" 
+        title="{{link[0]}}" 
+        href="/space/scene/{{data.space_id}}/{{link[1]}}" 
+        origin="{{link[8]}}"
+        position="{{link[2]}} {{link[3]}} {{link[4]}}" 
+        rotation="{{link[5]}} {{link[6]}} {{link[7]}}"
+      ></a-link>
       {% endfor%}
 
-      <a-box id="saveButton" class="clickable" contents-save="space_id:{{data.space_id}}" height="0.5" width="0.5" position="0 -2 -2" color="red"></a-box>
-      <a-entity id="linkButton" width="0" height="0" space-data="space_data:{{data.space_data}}" scale='0'></a-entity>
+      {% for object in data.objects%}
+        <a-entity 
+          position="{{object[0]}} {{object[1]}} {{object[2]}}" 
+          rotation="{{object[3]}} {{object[4]}} {{object[5]}}" 
+          scale="{{object[6]}} {{object[7]}} {{object[8]}}" 
+          geometry="primitive: {{object[9]}}" 
+          material="color: {{object[10]}}; opacity: {{object[11]}}" 
+          class="{{object[12]}}">
+        </a-entity>
+      {% endfor%}
+
+      {% for linkObj in data.linkObjs%}
+        <a-entity 
+          position="{{linkObj[0]}} {{linkObj[1]}} {{linkObj[2]}}" 
+          rotation="{{linkObj[3]}} {{linkObj[4]}} {{linkObj[5]}}" 
+          scale="{{linkObj[6]}} {{linkObj[7]}} {{linkObj[8]}}" 
+          geometry="primitive: {{linkObj[9]}}" 
+          material="color: {{linkObj[10]}}; opacity: {{linkObj[11]}}" 
+          class="{{linkObj[12]}}" 
+          link="href: {{linkObj[13]}}" 
+          text="value: {{linkObj[14]}}; width: 7; align: center; anchor: align; baseline: bottom">
+        </a-entity>
+      {% endfor%}
+
+      <a-box id="saveButton" class="clickable" contents-save="space_id:{{data.space_id}}/{{data.scene_id}}" scene-save="scene_id:{{data.scene_id}}" height="0.5" width="0.5" position="0 -2 -2" color="red"></a-box>
+      <a-entity id="linkButton" width="0" height="0" space-data="space_data:{{data.space_data}}" scene-data="scene_data:{{data.scene_data}}" scale='0'></a-entity>
       <a-entity id="objects"></a-entity>
 
       <a-camera>

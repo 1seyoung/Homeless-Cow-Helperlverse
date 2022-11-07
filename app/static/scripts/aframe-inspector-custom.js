@@ -35803,8 +35803,13 @@
         };
 
         this.insertLinkObject = function (e) {
+          console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
           var link_object = document.getElementById('linkButton');
           var spaceData = link_object.getAttribute('space-data');
+          var sceneData = link_object.getAttribute('scene-data');
+          console.log(spaceData);
+          console.log(sceneData);
           // console.log(JSON.stringify(spaceData));
 
           var space_data = JSON.stringify(spaceData);
