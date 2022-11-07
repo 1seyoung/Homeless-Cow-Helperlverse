@@ -10,8 +10,6 @@ from datetime import timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import RedirectResponse
-import telegram
-
 from .core.models.database import db_manager
 from .core.models.auth_manager import auth_manager
 from .core.models.telegram_ import tele_manager

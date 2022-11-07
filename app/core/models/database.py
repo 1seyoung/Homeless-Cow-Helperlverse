@@ -9,8 +9,7 @@ from ..libs.utils import get_password_hash
 import httpx
 from ..schemas.user_model import UserRegisterForm, UserInDB
 from ..schemas.space_model import CreateSpaceForm, SpaceModel, CreateSceneForm, UpdateSceneForm
-from ..instance.config import TELEGRAM_TOKEN
-from .telegram_  import tele_manager
+
 
 class db_manager(object):
     client = None
@@ -32,7 +31,7 @@ class db_manager(object):
             return UserInDB(**document)
         else:
             return None
-    
+
     @classmethod
     async def get_user_by_id(cls, userid:ObjectId) -> UserInDB|None:
         document = await cls.get_collection("users").find_one({'_id': userid})
@@ -49,7 +48,6 @@ class db_manager(object):
         if not verify_password(password, user.hashed_password):
             return False
         return user
-
     @classmethod
     async def create_user(cls, user:UserRegisterForm):
         userdata = await cls.get_user_by_email(user.email)
@@ -57,12 +55,30 @@ class db_manager(object):
             return False
         else:
             data = {'userid':user.username, 'email':user.email, 'chatid':user.chatid,'spaces':{}, 'hashed_password':get_password_hash(user.password)}
-            ee = f"Register email : {user.email}"
-            print(user.chatid)
-            await tele_manager.sendTgMessage(user.chatid,ee)
             await db_manager.get_collection('users').insert_one(data) 
             return True
 
+
+    @classmethod
+    async def get_chatid(cls, email: str):
+        #현재 접속한 사람의 chatid 정보
+        userdata = await cls.get_user_by_email(email)
+        scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
+        return scene['chatid']
+
+    @classmethod
+    async def get_name(cls, email: str):
+        #현재 접속한 사람의 chatid 정보
+        userdata = await cls.get_user_by_email(email)
+        scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
+        return scene['userid']
+
+    @classmethod
+    async def get_owner_chatid(cls, email: str):
+        #현재 접속한 스페이스 에디터의 chatid 정보
+        userdata = await cls.get_user_by_email(email)
+        scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
+        return scene['chatid']
 
     @classmethod
     async def create_space(cls, creator: str, space:CreateSpaceForm):
@@ -133,7 +149,7 @@ class db_manager(object):
         data = {'name':form.scene_name, 'image_id':image_id, 'links':check_list, 'objects':[], 'linkObjs':[]}
         scene_id = await db_manager.get_collection('scenes').insert_one(data)
         await db_manager.get_collection('spaces').update_one({'_id':ObjectId(space_id)}, [{"$set": {'scenes': {str(scene_id.inserted_id): form.scene_name}}}]) 
-
+ 
     async def create_link(cls, data:dict):
         link_id = await db_manager.get_collection('links').insert_one(data)
         return link_id
