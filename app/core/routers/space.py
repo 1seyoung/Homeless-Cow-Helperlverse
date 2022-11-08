@@ -106,11 +106,11 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                                              , target_link['_id']])
             
         for object in scene["objects"]:
-            print('testtttt')
+            #print('testtttt')
             target_object = await db_manager.get_collection("objects").find_one({'_id':object})
             # target_name = await db_manager.get_scene(target_object['target_id'])
             
-            print('target_object: ', target_object)
+            #print('target_object: ', target_object)
             objects.append([   target_object['x']
                              , target_object['y']
                              , target_object['z']
@@ -175,7 +175,7 @@ async def scene_edit(request: Request, scene_id:str, space_id:str, auth_user= De
         link_info = []
         for l in scene["links"]:
             link = await db_manager.get_link(l)
-            print(link)
+            #print(link)
             link_info.append(link)
         # object_info = []
         # for l in scene["objects"]:
@@ -292,11 +292,11 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
         if spaces[space_id][2] == 'Editor':
             _body = await request.body()
             _body = result = json.loads(_body.decode('utf-8'))
-            #print("body", _body)
+            
             for key, val in _body.items():
-                print(key)
+                #print(key)
                 if key == 'objects':
-                    print(val)
+                    #print('val ',  val)
                     for i in range(len(val)):
                         data = {
                             'x':val[i][0]["x"], 
@@ -313,26 +313,26 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
                             'opacity' : val[i][4]["opacity"], 
                             'class' : val[i][5]
                             }
-                        
+                        await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$set':{'objects':[]}})
                         res = await db_manager.get_collection('objects').insert_one(data)
-                        print('res', res.inserted_id)
+                        
                         await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$push':{'objects':ObjectId(res.inserted_id)}})
                         
-                        print(val[i][0]["x"])
-                        print(val[i][0]["y"])
-                        print(val[i][0]["z"]) # position x, y, z
+                        # print(val[i][0]["x"])
+                        # print(val[i][0]["y"])
+                        # print(val[i][0]["z"]) # position x, y, z
                         
-                        print(val[i][1]["x"])
-                        print(val[i][1]["y"])
-                        print(val[i][1]["z"]) # rotation x, y, z
+                        # print(val[i][1]["x"])
+                        # print(val[i][1]["y"])
+                        # print(val[i][1]["z"]) # rotation x, y, z
                         
-                        print(val[i][2]["x"])
-                        print(val[i][2]["y"])
-                        print(val[i][2]["z"]) # scale x, y, z
-                        print(val[i][3])      # material geometry
-                        print(val[i][4]["color"]) # color
-                        print(val[i][4]["opacity"]) # opacity
-                        print(val[i][5]) # class
+                        # print(val[i][2]["x"])
+                        # print(val[i][2]["y"])
+                        # print(val[i][2]["z"]) # scale x, y, z
+                        # print(val[i][3])      # material geometry
+                        # print(val[i][4]["color"]) # color
+                        # print(val[i][4]["opacity"]) # opacity
+                        # print(val[i][5]) # class
                         
                 elif key == 'linkObjs':
                     for i in range(len(val)):
@@ -353,25 +353,25 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
                             'href' : val[i][6], 
                             'value' : val[i][7]["value"]
                             }
-                        
+                        await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$set':{'linkObjs':[]}})
                         res = await db_manager.get_collection('linkObjs').insert_one(data)
                         await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$push':{'linkObjs':ObjectId(res.inserted_id)}})
                         
-                        print(val[i][0]["x"])
-                        print(val[i][0]["y"])
-                        print(val[i][0]["z"]) # position x, y, z
-                        print(val[i][1]["x"])
-                        print(val[i][1]["y"])
-                        print(val[i][1]["z"]) # rotation x, y, z
-                        print(val[i][2]["x"])
-                        print(val[i][2]["y"])
-                        print(val[i][2]["z"]) # scale x, y, z
-                        print(val[i][3])      # material geometry
-                        print(val[i][4]["color"]) # color
-                        print(val[i][4]["opacity"]) # opacity
-                        print(val[i][5]) # class
-                        print(val[i][6]) # href
-                        print(val[i][7]["value"]) # nametag value
+                        # print(val[i][0]["x"])
+                        # print(val[i][0]["y"])
+                        # print(val[i][0]["z"]) # position x, y, z
+                        # print(val[i][1]["x"])
+                        # print(val[i][1]["y"])
+                        # print(val[i][1]["z"]) # rotation x, y, z
+                        # print(val[i][2]["x"])
+                        # print(val[i][2]["y"])
+                        # print(val[i][2]["z"]) # scale x, y, z
+                        # print(val[i][3])      # material geometry
+                        # print(val[i][4]["color"]) # color
+                        # print(val[i][4]["opacity"]) # opacity
+                        # print(val[i][5]) # class
+                        # print(val[i][6]) # href
+                        # print(val[i][7]["value"]) # nametag value
                         
                 else:
                     data = {'x':val[0]["x"], 'y':val[0]["y"], 'z':val[0]["z"], 'yaw':val[1]["x"], 'pitch':val[1]["y"], "roll":val[1]["z"]}
