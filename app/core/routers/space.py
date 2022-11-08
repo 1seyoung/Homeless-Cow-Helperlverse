@@ -87,11 +87,8 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
     else:
         scene = await db_manager.get_scene(ObjectId(scene_id))
         space = await db_manager.get_space(ObjectId(space_id))
-        # print(scene)
         
         links = []
-        # objects = []
-        # linkObjs = []
         
         for link in scene["links"]:
             target_link = await db_manager.get_collection("links").find_one({'_id':link})
@@ -105,48 +102,14 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                                              , target_link['pitch']
                                              , target_link['roll']
                                              , target_link['_id']])
-            
-        # for object in scene["objects"]:
-        #     target_object = await db_manager.get_collection("objects").find_one({'_id':object})
-        #     # target_name = await db_manager.get_scene(target_objects['target_id'])
-            
-        #     objects.append([   target_object['x']
-        #                      , target_object['y']
-        #                      , target_object['z']
-        #                      , target_object['yaw']
-        #                      , target_object['pitch']
-        #                      , target_object['roll']
-        #                      , target_object['xscale']
-        #                      , target_object['yscale']
-        #                      , target_object['zscale']
-        #                      , target_object['getmetry']
-        #                      , target_object['color']
-        #                      , target_object['opacity']
-        #                      , target_object['_id']])
-            
-        # for linkObj in scene["linkObjs"]:
-        #     target_linkObj = await db_manager.get_collection("objects").find_one({'_id':linkObj})
-        #     # target_name = await db_manager.get_scene(target_objects['target_id'])
-            
-        #     linkObjs.append([target_linkObj['name'], target_linkObj['x']
-        #                                         , target_linkObj['y']
-        #                                         , target_linkObj['z']
-        #                                         , target_linkObj['yaw']
-        #                                         , target_linkObj['pitch']
-        #                                         , target_linkObj['roll']
-        #                                         , target_linkObj['xscale']
-        #                                         , target_linkObj['yscale']
-        #                                         , target_linkObj['zscale']
-        #                                         , target_linkObj['getmetry']
-        #                                         , target_linkObj['color']
-        #                                         , target_linkObj['opacity']
-        #                                         , target_linkObj['_id']])
-
-        # , 'objects':objects, 'linkObjs':linkObjs
 
         data = {'space_id':space_id, 'background':scene['image_id'], 'links':links, 'space_data':space}
-        return templates.TemplateResponse("aframe/scene.html", {"request": request, "data": data, "login":True})
-
+        scene_type = await db_manager.get_scenes_type(ObjectId(scene['image_id']))
+        print(scene_type)
+        if scene_type['metadata'] == "video/mp4":
+            return templates.TemplateResponse("aframe/scene.html", {"request": request, "data": data, "login":True})
+        else: return templates.TemplateResponse("aframe/scene_img.html", {"request": request, "data": data, "login":True})
+        
 @router.get("/space/scene/edit/{space_id}/{scene_id}", response_class=HTMLResponse)
 async def scene_edit(request: Request, scene_id:str, space_id:str, auth_user= Depends(get_current_user)):
     if not auth_user :

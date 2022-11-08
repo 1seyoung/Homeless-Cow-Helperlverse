@@ -282,3 +282,10 @@ class db_manager(object):
         res = db_manager.get_collection('links').find({})
 
         await db_manager.get_collection('spaces').update_one({'_id':space_id}, {'$unset':{f"scenes.{str(scene_id)}":""}})
+    
+    @classmethod
+    async def get_scenes_type(cls, spaceid: ObjectId):
+        #scenes_type = []
+        scenes_type = await cls.get_collection("images.files").find_one({"_id":spaceid})
+        
+        return scenes_type

@@ -35,12 +35,15 @@
   <div class="row" style="height: 75vh;">
     <a-scene id='scene' embedded>
       <a-assets>
+        <img id="background" src="/asset/image/{{data.background}}" crossorigin="anonymous">
         <!-- Images. 
-        <img id="background" src="/asset/image/{{data.background}}" crossorigin="anonymous">-->
+        
+        
         <video id="background" preload="auto"
                src="/asset/image/{{data.background}}"
                width="160" height="90" autoplay loop="true"
                crossOrigin="anonymous" muted></video>
+               -->
       </a-assets>
     
       <!-- 360-degree image. -->

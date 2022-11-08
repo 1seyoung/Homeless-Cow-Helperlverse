@@ -27,7 +27,7 @@ import io
 @router.get("/asset/image/{image_id}", 
         responses = {
             200: {
-                "content": {"video/mp4": {}}}
+                "content": {"video/*": {}, "image/*":{}}}
         }, response_class=Response)
        
 async def image(request: Request, image_id:str, auth_user= Depends(get_current_user)):
