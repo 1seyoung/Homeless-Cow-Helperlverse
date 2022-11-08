@@ -147,7 +147,7 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                              , target_linkObj['_id']])
 
 
-        data = {'space_id':space_id, 'scene_id':scene_id, 'background':scene['image_id'], 'links':links, 'objects':objects, 'linkObjs':linkObjs}
+        data = {'space_id':space_id, 'scene_id':scene_id, 'background':scene['image_id'], 'links':links, 'objects':objects, 'linkObjs':linkObjs, 'space_data':space, 'scene_data':scene}
         return templates.TemplateResponse("aframe/scene.html", {"request": request, "data": data, "login":True})
 
 @router.get("/space/scene/edit/{space_id}/{scene_id}", response_class=HTMLResponse)
