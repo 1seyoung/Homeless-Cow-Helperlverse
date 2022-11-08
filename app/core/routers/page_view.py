@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 async def root(request: Request, auth_user= Depends(get_current_user)):
     #tele_manager.sendMsg(1739915236,"seni")
     if not auth_user :
-        data = {'text': '<div style="text-align: center" ;><h1>Metaverse Community </h1></div>\n', 'spaces':{}}  
+        data = {'text': '<div style="text-align: center;"><span style="font-style: italic ;"><span style="font-size: 60px ;">Cowdians</span></span></div>\n', 'spaces':{}}  
         return templates.TemplateResponse("page.html", {"request": request, "data": data, "login": False})
 
     else:
