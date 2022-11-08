@@ -30249,9 +30249,9 @@
           // space_id 가져오기
           var content_save = entity.querySelector('#saveButton');
           var space_id = content_save.getAttribute('contents-save')['space_id'];
-
+          var scene_id = content_save.getAttribute('scene-save')['scene_id'];
           var url = '/space/scene/link/update/' + space_id;
-          console.log(url);
+          console.log(space_id);
     
           var xhr = new XMLHttpRequest();
 
@@ -30291,6 +30291,8 @@
             iconColor: '#a5dc86',
             title: 'Saved successfully'
           });
+
+          console.log("jadata", jdata)
         }
         // --
         this.onCloseHelpModal = function (value) {

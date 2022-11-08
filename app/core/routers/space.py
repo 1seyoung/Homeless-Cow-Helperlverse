@@ -105,7 +105,7 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                                              , target_link['pitch']
                                              , target_link['roll']
                                              , target_link['_id']])
-
+            
         for object in scene["objects"]:
             print('testtttt')
             target_object = await db_manager.get_collection("objects").find_one({'_id':object})
@@ -124,12 +124,13 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                              , target_object['geometry']
                              , target_object['color']
                              , target_object['opacity']
+                             , target_object['class']
                              , target_object['_id']])
             
         for linkObj in scene["linkObjs"]:
             target_linkObj = await db_manager.get_collection("linkObjs").find_one({'_id':linkObj})
             # target_name = await db_manager.get_scene(target_objects['target_id'])
-          
+            
             linkObjs.append([  target_linkObj['x']
                              , target_linkObj['y']
                              , target_linkObj['z']
@@ -142,6 +143,7 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                              , target_linkObj['geometry']
                              , target_linkObj['color']
                              , target_linkObj['opacity']
+                             , target_linkObj['class']
                              , target_linkObj['href']
                              , target_linkObj['value']
                              , target_linkObj['_id']])
@@ -169,19 +171,19 @@ async def scene_edit(request: Request, scene_id:str, space_id:str, auth_user= De
             link = await db_manager.get_link(l)
             print(link)
             link_info.append(link)
-        # object_info = []
-        # for l in scene["objects"]:
-        #     objects = await db_manager.get_object(l)
-        #     print(objects)
-        #     link_info.append(objects)
-        # linkobj_info = []
-        # for l in scene["linkObj"]:
-        #     linkobj = await db_manager.get_linkObj(l)
-        #     print(linkobj)
-        #     link_info.append(linkobj)
+        object_info = []
+        for l in scene["objects"]:
+            objects = await db_manager.get_objsect(l)
+            print(objects)
+            link_info.append(objects)
+        linkobj_info = []
+        for l in scene["linkObj"]:
+            linkobj = await db_manager.get_linkObj(l)
+            print(linkobj)
+            link_info.append(linkobj)
             
         # , "objects":object_info, "linkObj" : linkobj_info
-                    
+        
         data = {'name': scene['name'], 'image_id':scene['image_id'], "scenes":scenes, "links":link_info}
         return templates.TemplateResponse("space/update_scene.html", {"request": request, "data": data, "login":True})
 
@@ -307,6 +309,7 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
                             }
                         
                         res = await db_manager.get_collection('objects').insert_one(data)
+                        print('res', res.inserted_id)
                         await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$push':{'objects':ObjectId(res.inserted_id)}})
                         
                         print(val[i][0]["x"])

@@ -22,7 +22,7 @@ class CreateSpaceForm:
         self.request: Request = request
         self.errors: list = []
         self.form_data = {'agreement' : ['private']}
-        #self.form_data['agreements'] = ['private']
+        #self.form_data['agreements'] = ['private']    
 
     async def load_data(self):
         form = await self.request.form()

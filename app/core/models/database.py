@@ -73,6 +73,8 @@ class db_manager(object):
         scene = await db_manager.get_collection('users').find_one({"_id":userdata.id})
         return scene['userid']
 
+
+
     @classmethod
     async def get_owner_chatid(cls, email: str):
         #현재 접속한 스페이스 에디터의 chatid 정보
