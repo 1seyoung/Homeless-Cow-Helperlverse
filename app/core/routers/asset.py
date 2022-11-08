@@ -1,3 +1,4 @@
+from tkinter import image_names
 from fastapi.responses import HTMLResponse
 from os.path import dirname, abspath
 from pathlib import Path
@@ -34,7 +35,9 @@ async def image(request: Request, image_id:str, auth_user= Depends(get_current_u
     token = request.cookies.get('access_token')
     payload = jwt.decode(token.split()[1], config.JWT_SECRET_KEY, algorithms=[config.ALGORITHM])
     userid: str = payload.get("sub")
-    tele_manager.sendMsg(await db_manager.get_chatid(userid),"view")    
+    #imgname=await db_manager.get_image(image_id)
+    
+    tele_manager.sendMsg(await db_manager.get_chatid(userid),f"enter scene({image_id}): {userid}")    
     image_bytes, content_type = await db_manager.download_file(ObjectId(image_id))
     return Response(content=image_bytes, media_type=content_type)
 
