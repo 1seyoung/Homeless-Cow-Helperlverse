@@ -1,3 +1,4 @@
+import dbm
 import motor.motor_asyncio
 
 from bson.objectid import ObjectId
@@ -137,15 +138,17 @@ class db_manager(object):
         proc_links = list(zip(form.scene, form.x, form.y, form.z, form.yaw, form.pitch, form.roll))
 
         check_list = []
+        
+        
         for plink in proc_links:
             target_id, _ = plink[0].split(".")
             
             if target_id != "":
                 data = {'x':plink[1], 'y':plink[2], 'z':plink[3],'target_id':ObjectId(target_id), 'yaw':plink[4], 'pitch':plink[5], 'roll':plink[6],}
                 res = await db_manager.get_collection('links').insert_one(data)
+                
                 check_list.append(res.inserted_id)
-
-        data = {'name':form.scene_name, 'image_id':image_id, 'links':check_list}
+        data = {'name':form.scene_name, 'image_id':image_id, 'links':check_list, 'objects':[], 'linkObjs':[]}
         scene_id = await db_manager.get_collection('scenes').insert_one(data)
         await db_manager.get_collection('spaces').update_one({'_id':ObjectId(space_id)}, [{"$set": {'scenes': {str(scene_id.inserted_id): form.scene_name}}}]) 
  
@@ -171,8 +174,7 @@ class db_manager(object):
 
         prev_scene = await db_manager.get_collection('scenes').find_one(scene_id)
         proc_links = list(zip(form.scene, form.x, form.y, form.z, form.yaw, form.pitch, form.roll))
-        print(proc_links)
-
+        print("proc", proc_links)
         prev_links = prev_scene['links']
 
         check_list = []
@@ -183,7 +185,7 @@ class db_manager(object):
                 if ObjectId(link_id) in prev_links:
                     prev_links.remove(ObjectId(link_id))
                 data = {'x':plink[1], 'y':plink[2], 'z':plink[3],'target_id':ObjectId(target_id), 'yaw':plink[4], 'pitch':plink[5], 'roll':plink[6],}
-                print(data)
+                print("data", data)
                 await db_manager.get_collection('links').update_one({'_id':ObjectId(link_id)}, {'$set':data})
             else:
                 if target_id != "":
@@ -208,7 +210,15 @@ class db_manager(object):
     async def get_link(cls, link_id:ObjectId ):
         link = await db_manager.get_collection('links').find_one({"_id":link_id})
         return link
-    
+    @classmethod
+    async def get_object(cls, link_id:ObjectId ):
+        link = await db_manager.get_collection('objects').find_one({"_id":link_id})
+        return link
+    @classmethod
+    async def get_linkObj(cls, link_id:ObjectId ):
+        link = await db_manager.get_collection('linkObj').find_one({"_id":link_id})
+        return link
+            
     @classmethod
     async def get_scenes(cls, spaceid: ObjectId):
         scenes = []

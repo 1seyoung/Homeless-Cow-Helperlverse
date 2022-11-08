@@ -87,7 +87,7 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
     else:
         scene = await db_manager.get_scene(ObjectId(scene_id))
         space = await db_manager.get_space(ObjectId(space_id))
-        # print(scene)
+        print(scene)
         
         links = []
         # objects = []
@@ -142,7 +142,6 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
         #                                         , target_linkObj['opacity']
         #                                         , target_linkObj['_id']])
 
-        # , 'objects':objects, 'linkObjs':linkObjs
 
         data = {'space_id':space_id, 'background':scene['image_id'], 'links':links, 'space_data':space}
         return templates.TemplateResponse("aframe/scene.html", {"request": request, "data": data, "login":True})
@@ -289,6 +288,27 @@ async def handle_link_update(request: Request, space_id:str, auth_user= Depends(
                         print(val[i][5]) # class
                 elif key == 'linkObjs':
                     for i in range(len(val)):
+                        data = {
+                            'x':val[i][0]["x"], 
+                            'y':val[i][0]["y"], 
+                            'z':val[i][0]["z"], 
+                            'yaw':val[i][1]["x"], 
+                            'pitch':val[i][1]["y"], 
+                            'roll':val[i][1]["z"], 
+                            'xscale' : val[i][2]["x"], 
+                            'yscale' : val[i][2]["y"], 
+                            'zscale' : val[i][2]["x"], 
+                            'geometry': val[i][3], 
+                            'color' : val[i][4]["color"], 
+                            'opacity' : val[i][4]["opacity"], 
+                            'class' : val[i][5], 
+                            'href' : val[i][6], 
+                            'value' : val[i][7]["value"]
+                            }
+                        
+                        res = await db_manager.get_collection('linkObjs').insert_one(data)
+                        await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$push':{'linkObjs':ObjectId(res.inserted_id)}})
+                        
                         print(val[i][0]["x"])
                         print(val[i][0]["y"])
                         print(val[i][0]["z"]) # position x, y, z
