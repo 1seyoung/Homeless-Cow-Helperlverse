@@ -292,7 +292,16 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
         if spaces[space_id][2] == 'Editor':
             _body = await request.body()
             _body = result = json.loads(_body.decode('utf-8'))
-            
+
+            scene = await db_manager.get_collection('scenes').find_one({"_id":ObjectId(scene_id)})
+            print(scene['objects'])
+            for obj in scene['objects'] :
+                await db_manager.get_collection('objects').delete_one({"_id" : ObjectId(obj)})    
+            for obj in scene['linkObjs'] :
+                await db_manager.get_collection('linkObjs').delete_one({"_id" : ObjectId(obj)})   
+                         
+            await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$set':{'objects':[]}})
+            await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$set':{'linkObjs':[]}})
             for key, val in _body.items():
                 #print(key)
                 if key == 'objects':
@@ -313,7 +322,7 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
                             'opacity' : val[i][4]["opacity"], 
                             'class' : val[i][5]
                             }
-                        await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$set':{'objects':[]}})
+                                
                         res = await db_manager.get_collection('objects').insert_one(data)
                         
                         await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$push':{'objects':ObjectId(res.inserted_id)}})
@@ -353,7 +362,6 @@ async def handle_link_update(request: Request, space_id:str, scene_id:str, auth_
                             'href' : val[i][6], 
                             'value' : val[i][7]["value"]
                             }
-                        await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$set':{'linkObjs':[]}})
                         res = await db_manager.get_collection('linkObjs').insert_one(data)
                         await db_manager.get_collection('scenes').update_one({'_id':ObjectId(scene_id)}, {'$push':{'linkObjs':ObjectId(res.inserted_id)}})
                         
