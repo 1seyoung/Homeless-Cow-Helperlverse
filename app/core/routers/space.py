@@ -87,7 +87,9 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
     else:
         scene = await db_manager.get_scene(ObjectId(scene_id))
         space = await db_manager.get_space(ObjectId(space_id))
-        # print(scene)
+        
+        print(space)
+        print(scene)
         
         links = []
         objects = []
@@ -147,6 +149,7 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
                              , target_linkObj['href']
                              , target_linkObj['value']
                              , target_linkObj['_id']])
+            
 
 
         data = {'space_id':space_id, 'scene_id':scene_id, 'background':scene['image_id'], 'links':links, 'objects':objects, 'linkObjs':linkObjs, 'space_data':space, 'scene_data':scene}
@@ -171,16 +174,16 @@ async def scene_edit(request: Request, scene_id:str, space_id:str, auth_user= De
             link = await db_manager.get_link(l)
             print(link)
             link_info.append(link)
-        object_info = []
-        for l in scene["objects"]:
-            objects = await db_manager.get_objsect(l)
-            print(objects)
-            link_info.append(objects)
-        linkobj_info = []
-        for l in scene["linkObj"]:
-            linkobj = await db_manager.get_linkObj(l)
-            print(linkobj)
-            link_info.append(linkobj)
+        # object_info = []
+        # for l in scene["objects"]:
+        #     objects = await db_manager.get_objsect(l)
+        #     print(objects)
+        #     link_info.append(objects)
+        # linkobj_info = []
+        # for l in scene["linkObj"]:
+        #     linkobj = await db_manager.get_linkObj(l)
+        #     print(linkobj)
+        #     link_info.append(linkobj)
             
         # , "objects":object_info, "linkObj" : linkobj_info
         
