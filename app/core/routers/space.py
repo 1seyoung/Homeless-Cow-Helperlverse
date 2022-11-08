@@ -144,7 +144,12 @@ async def scene(request: Request, space_id: str, scene_id:str, auth_user= Depend
         # , 'objects':objects, 'linkObjs':linkObjs
 
         data = {'space_id':space_id, 'background':scene['image_id'], 'links':links, 'space_data':space}
-        return templates.TemplateResponse("aframe/scene.html", {"request": request, "data": data, "login":True})
+        scene_type = await db_manager.get_scenes_type(ObjectId(scene['image_id']))
+        #print(scene_type)
+        if scene_type['metadata'] == "video/mp4":
+            return templates.TemplateResponse("aframe/scene.html", {"request": request, "data": data, "login":True})
+        else: return templates.TemplateResponse("aframe/scene_img.html", {"request": request, "data": data, "login":True})
+        
 
 @router.get("/space/scene/edit/{space_id}/{scene_id}", response_class=HTMLResponse)
 async def scene_edit(request: Request, scene_id:str, space_id:str, auth_user= Depends(get_current_user)):
